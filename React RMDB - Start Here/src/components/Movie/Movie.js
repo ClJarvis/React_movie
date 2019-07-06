@@ -10,13 +10,55 @@ import './Movie.css';
 
 
 class Movie extends Component {
+	state = {
+		movie: null,
+		actors: null,
+		directors: [],
+		loading: false
+	}
+
+componentDidMount()
+{
+	this.setState({ loading: true})
+	//fetch the movie
+	const endpoint = `${API_URL}movie/${this.props.match.parms.movieId}?api_key=${API_KEY}&language=en-US`; 
+	this.fetchItems(endpoint);
+}
+
+	fetchItems = (endpoint) => {
+		fetch(endpoint)
+		.then(result => result.json())
+		.then(result => {
+
+			 if(result.status_code){
+			 	this.setState({ loading: false});
+			 } else {
+			 	this.setState({movie: result}, () => {
+			 		//... the fetch actors insetstate
+			 		const endpoint = `${API_URL}movie/${this.props.match.parms.movieId}/credits?api_key=${API_KEY}`
+			 		fetch(endpoint)
+			 			.then(result =>result.json())
+			 			.then(result => {
+			 				const directors = result.crew.filter(( member ) => member.job === "Director")
+
+			 				this.setState({
+			 					actors: result.cast,	
+			 					directors,
+			 					loading:false
+			 				})
+			 			})
+			 		})
+			 }
+		}) 
+		.catch(error => console.error('Error:', error));
+	}
 	render() {
 	return (
 		<div className='rmbd-movie'>
 			<Navigation />
 			<MovieInfo />
 			<MovieInfoBar />
-			<FourColGrid />
+	//		<FourColGrid />
 			<Spinner />
 		</div>
 		)
