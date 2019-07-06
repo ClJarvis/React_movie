@@ -12,8 +12,12 @@ import './Movie.css';
 class Movie extends Component {
 	render() {
 	return (
-		<div>
-			Movie
+		<div className='rmbd-movie'>
+			<Navigation />
+			<MovieInfo />
+			<MovieInfoBar />
+			<FourColGrid />
+			<Spinner />
 		</div>
 		)
 	}
