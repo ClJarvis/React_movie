@@ -17,12 +17,16 @@ class Movie extends Component {
 		loading: false
 	}
 
-componentDidMount()
-{
+componentDidMount() {
+	if (localStorage.getItem(`${this.props.match.params.movieId}`)) {
+		const state = JSON.parse(localStorage.getItem(`${this.props.match.params.movieId}`));
+		this.setState({...state});
+	} else {
 	this.setState({ loading: true})
 	//fetch the movie
-	const endpoint = `${API_URL}movie/${this.props.match.parms.movieId}?api_key=${API_KEY}&language=en-US`; 
+	const endpoint = `${API_URL}movie/${this.props.match.params.movieId}?api_key=${API_KEY}&language=en-US`; 
 	this.fetchItems(endpoint);
+	}
 }
 
 	fetchItems = (endpoint) => {
@@ -35,7 +39,7 @@ componentDidMount()
 			 } else {
 			 	this.setState({movie: result}, () => {
 			 		//... the fetch actors insetstate
-			 		const endpoint = `${API_URL}movie/${this.props.match.parms.movieId}/credits?api_key=${API_KEY}`
+			 		const endpoint = `${API_URL}movie/${this.props.match.params.movieId}/credits?api_key=${API_KEY}`
 			 		fetch(endpoint)
 			 			.then(result =>result.json())
 			 			.then(result => {
@@ -45,7 +49,9 @@ componentDidMount()
 			 					actors: result.cast,	
 			 					directors,
 			 					loading:false
-			 				})
+			 				}, () => { 
+			 					localStorage.setItem(`${this.props.match.params.movieId}`, JSON.stringify(this.state));
+			 			  })
 			 			})
 			 		})
 			 }

@@ -1,5 +1,6 @@
 import React from 'react';
-import { IMAGE_BASE_URL, POSTER_SIZE, BACKDROP_SIZE } from '../../../config.js';
+import { IMAGE_BASE_URL, POSTER_SIZE, BACKDROP_SIZE } from '../../../config';
+import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
 import MovieThumb from "../MovieThumb/MovieThumb";
 import './MovieInfo.css';
@@ -24,7 +25,7 @@ const MovieInfo = (props) => {
 							<p>{props.movie.overview}</p>
 							<h3>IMDB RATING</h3>
 							<div className="rmdb-rating">
-								<meter min='0'max='100' optimum='100' low='40' high='70' value={props.movie.vote_average * 10}> </meter>
+								<meter min='0' max="100" optimum="100" low="40" high="70" value={props.movie.vote_average * 10}> </meter>
 								<p className="rmdb-score">{props.movie.vote_average}</p>  
 							</div>
 							{props.directors.length > 1 ? <h3>DIRECTORS</h3> : <h3>DIRECTOR</h3>}

@@ -19,9 +19,14 @@ class Home extends Component {
 	}
 
 componentDidMount() {
+	if(localStorage.getItem('HomeState')) {
+		const state = JSON.parse(localStorage.getItem('HomeState'));
+		this.setState({...state});
+	} else {
 	this.setState({ loading: true});
 	const endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=1`;
 	this.fetchItems(endpoint);
+	}
 }
 
 searchItems = (searchTerm) => {
@@ -62,9 +67,13 @@ fetchItems = (endpoint) => {
 			movies:[...this.state.movies, ...result.results],
 			heroImage: this.state.heroImage || result.results[0],
 			loading: false,
-			currentPage: result.page,
+			currentPage: result.page, 
 			totalPages: result.total_pages    
-		}) 
+		}, ()=> {  
+			if (this.state.searchTerm === "") {
+				localStorage.setItem('HomeState', JSON.stringify(this.state)); 
+			}
+		})
 	})
 	.catch(error => console.error('Error', error))
 }
