@@ -13,7 +13,7 @@ class Movie extends Component {
 	state = {
 		movie: null,
 		actors: null,
-		directors: [],
+		directors:  [],
 		loading: false
 	}
 
@@ -38,17 +38,17 @@ componentDidMount() {
 			 	this.setState({ loading: false});
 			 } else {
 			 	this.setState({movie: result}, () => {
-			 		//... the fetch actors insetstate
-			 		const endpoint = `${API_URL}movie/${this.props.match.params.movieId}/credits?api_key=${API_KEY}`
+			 		//... the fetch actors in setstate
+			 		const endpoint = `${API_URL}movie/${this.props.match.params.movieId}/credits?api_key=${API_KEY}`;
 			 		fetch(endpoint)
 			 			.then(result =>result.json())
 			 			.then(result => {
-			 				const directors = result.crew.filter(( member ) => member.job === "Director")
+			 				const directors = result.crew.filter( (member) => member.job === "Director");
 
 			 				this.setState({
 			 					actors: result.cast,	
-			 					directors,
-			 					loading:false
+			 					directors: directors,
+			 					loading: false
 			 				}, () => { 
 			 					localStorage.setItem(`${this.props.match.params.movieId}`, JSON.stringify(this.state));
 			 			  })
@@ -64,7 +64,7 @@ componentDidMount() {
 			{this.state.movie ?
 			<div>
 				<Navigation movie={this.props.location.movieName} />
-				<MovieInfo movie={this.state.movie}  />
+				<MovieInfo movie={this.state.movie}  directors={this.state.directors} />
 				<MovieInfoBar time={this.state.runtime} budget={this.state.movie.budget} revenue={this.state.movie.revenue} />
 			</div>
 			: null }
