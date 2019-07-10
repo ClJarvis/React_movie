@@ -18,18 +18,25 @@ class Movie extends Component {
 	}
 
 componentDidMount() {
-	if (localStorage.getItem(`${this.props.match.params.movieId}`)) {
-		const state = JSON.parse(localStorage.getItem(`${this.props.match.params.movieId}`));
+
+	    // ES6 destructuring the props
+    const { movieId } = this.props.match.params;
+
+	if (localStorage.getItem(`${movieId}`)) {
+		const state = JSON.parse(localStorage.getItem(`${movieId}`));
 		this.setState({...state});
 	} else {
 	this.setState({ loading: true})
 	//fetch the movie
-	const endpoint = `${API_URL}movie/${this.props.match.params.movieId}?api_key=${API_KEY}&language=en-US`; 
+	const endpoint = `${API_URL}movie/${movieId}?api_key=${API_KEY}&language=en-US`; 
 	this.fetchItems(endpoint);
 	}
 }
 
 	fetchItems = (endpoint) => {
+
+		const { movieId } = this.props.match.params;
+
 		fetch(endpoint)
 		.then(result => result.json())
 		.then(result => {
@@ -39,7 +46,7 @@ componentDidMount() {
 			 } else {
 			 	this.setState({movie: result}, () => {
 			 		//... the fetch actors in setstate
-			 		const endpoint = `${API_URL}movie/${this.props.match.params.movieId}/credits?api_key=${API_KEY}`;
+			 		let endpoint = `${API_URL}movie/${movieId}/credits?api_key=${API_KEY}`;
 			 		fetch(endpoint)
 			 			.then(result =>result.json())
 			 			.then(result => {
@@ -50,7 +57,7 @@ componentDidMount() {
 			 					directors: directors,
 			 					loading: false
 			 				}, () => { 
-			 					localStorage.setItem(`${this.props.match.params.movieId}`, JSON.stringify(this.state));
+			 					localStorage.setItem(`${movieId}`, JSON.stringify(this.state));
 			 			  })
 			 			})
 			 		})
@@ -59,27 +66,30 @@ componentDidMount() {
 		.catch(error => console.error('Error:', error));
 	}
 	render() {
+    // ES6 Destructuring the props and state
+    const { movieName } = this.props.location;
+    const { movie, directors, actors, loading } = this.state;
 	return (
 		<div className='rmbd-movie'>
-			{this.state.movie ?
+			{movie ?
 			<div>
-				<Navigation movie={this.props.location.movieName} />
-				<MovieInfo movie={this.state.movie}  directors={this.state.directors} />
-				<MovieInfoBar time={this.state.runtime} budget={this.state.movie.budget} revenue={this.state.movie.revenue} />
+				<Navigation movie={movieName} />
+				<MovieInfo movie={movie}  directors={directors} />
+				<MovieInfoBar time={movie.runtime} budget={movie.budget} revenue={movie.revenue} />
 			</div>
 			: null }
 			{this.state.actors ? 
 				<div className="rmbd-movie-grid">
-					<FourColGrid > 
+					<FourColGrid header={'Actors'}> 
 						
-						{this.state.actors.map( (element, i) => {
-							return <Actor ket={i} actor={element} />
+						{actors.map( (element, i) => {
+							return <Actor key={i} actor={element} />
 						})}
 					</FourColGrid >
 				</div>
 		:null }
-		 	{!this.state.actors && !this.state.loading ?  <h1>No Movie Found!</h1> : null }	
-		 	{this.state.loading ? <Spinner /> : null}
+		 	{!actors && !loading ?  <h1>No Movie Found!</h1> : null }	
+		 	{loading ? <Spinner /> : null}
 		}
 	</div>
 		)
