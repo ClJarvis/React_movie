@@ -1,13 +1,12 @@
 import React from 'react';
 import { IMAGE_BASE_URL, POSTER_SIZE, BACKDROP_SIZE } from '../../../config';
-import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
 import MovieThumb from "../MovieThumb/MovieThumb";
 import './MovieInfo.css';
 
 const MovieInfo = (props) => {
 	return (
-		<div className='rmdb-movie-info'>
+		<div className='rmdb-movieinfo'>
 			style={{ 
 				background: props.movie.backdrop_path ? `url('${IMAGE_BASE_URL}${BACKDROP_SIZE}${props.movie.backdrop_path}')` : '#000'	
 			}}
