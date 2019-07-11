@@ -96,7 +96,7 @@ fetchItems = (endpoint) => {
 				title={heroImage.original_title}
 				text={heroImage.overview}
 				/>
-				<SearchBar callback={this.state.searchItems} />
+				<SearchBar callback={this.searchItems} />
 			</div> : null }
 			<div className="rmdb-home-grid">
 				<FourColGrid
